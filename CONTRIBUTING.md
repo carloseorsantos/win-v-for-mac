@@ -13,20 +13,26 @@ Thank you for your interest in contributing to **Win+V for Mac**! We welcome bug
 
 ### Getting the Code
 ```bash
-git clone git@github.com:carloseorsantos/win-v-for-mac.git
+git clone https://github.com/carloseorsantos/win-v-for-mac.git
 cd win-v-for-mac
 ```
 
 ### Building & Running Locally
 ```bash
-# Run tests
+# Run unit tests
 swift test
 
 # Build and run the app in debug mode
 swift run WinPlusV
 
-# Build release bundle
-./scripts/bundle_app.sh
+# Build release bundle and .zip
+./Scripts/build.sh
+
+# Generate DMG installer
+./Scripts/create_dmg.sh
+
+# Install directly to /Applications
+./Scripts/install.sh
 ```
 
 ---
@@ -59,7 +65,7 @@ swift run WinPlusV
 ---
 
 ## 🐛 Reporting Bugs
-Please use the [Bug Report Template](.github/ISSUE_TEMPLATE/bug_report.md) when opening issues and include:
+Please open an issue on GitHub and include:
 - macOS version
 - Target application where the issue occurred
 - Steps to reproduce

@@ -131,7 +131,7 @@ public struct SettingsView: View {
             VStack(spacing: 4) {
                 Text("Win+V for Mac")
                     .font(.title2.bold())
-                Text("Versão 1.0.0 (Open Source)")
+                Text("Versão \(AppInfo.version) (Open Source)")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

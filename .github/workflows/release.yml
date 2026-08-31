@@ -1,0 +1,48 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, Package & Publish Release
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app || true
+
+      - name: Show Swift & Xcode Version
+        run: |
+          swift --version
+          xcodebuild -version || true
+
+      - name: Run Unit Tests
+        run: swift test
+
+      - name: Grant Script Permissions
+        run: chmod +x Scripts/*.sh
+
+      - name: Build & Package App Bundle (.app & .zip)
+        run: ./Scripts/build.sh
+
+      - name: Create DMG Installer (.dmg)
+        run: ./Scripts/create_dmg.sh
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/WinPlusV-macOS.dmg
+            dist/WinPlusV.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false
