@@ -117,9 +117,16 @@ public struct SettingsView: View {
 
     private var aboutTab: some View {
         VStack(spacing: 16) {
-            Image(systemName: "clipboard.fill")
-                .font(.system(size: 44))
-                .foregroundColor(.accentColor)
+            if let appIcon = NSApp.applicationIconImage {
+                Image(nsImage: appIcon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 64, height: 64)
+            } else {
+                Image(systemName: "clipboard.fill")
+                    .font(.system(size: 44))
+                    .foregroundColor(.accentColor)
+            }
 
             VStack(spacing: 4) {
                 Text("Win+V for Mac")

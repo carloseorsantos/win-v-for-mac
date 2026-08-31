@@ -1,7 +1,7 @@
 # 📋 Win+V for Mac
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/carloseorsantos/win-v-for-mac/main/Assets/logo.png" alt="Win+V for Mac Banner" width="120" onerror="this.style.display='none'"/>
+  <img src="assets/logo.png" alt="Win+V for Mac Logo" width="120" />
 </p>
 
 <p align="center">

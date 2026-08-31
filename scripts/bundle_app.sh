@@ -18,8 +18,11 @@ rm -rf "$BUNDLE_DIR"
 mkdir -p "$MACOS_DIR"
 mkdir -p "$RESOURCES_DIR"
 
-# Copiar executável
+# Copiar executável e recursos
 cp "$BUILD_DIR/$APP_NAME" "$MACOS_DIR/$APP_NAME"
+if [ -f "assets/AppIcon.icns" ]; then
+    cp "assets/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
+fi
 
 # Criar Info.plist
 cat <<EOF > "$CONTENTS_DIR/Info.plist"
@@ -29,6 +32,10 @@ cat <<EOF > "$CONTENTS_DIR/Info.plist"
 <dict>
     <key>CFBundleExecutable</key>
     <string>$APP_NAME</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
     <string>com.opensource.winplusv</string>
     <key>CFBundleName</key>
