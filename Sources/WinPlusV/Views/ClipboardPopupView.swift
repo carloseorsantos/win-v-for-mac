@@ -306,6 +306,6 @@ public struct ClipboardPopupView: View {
 
     private func openSettings() {
         FloatingPanelController.shared.hide()
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        SettingsWindowController.shared.show()
     }
 }

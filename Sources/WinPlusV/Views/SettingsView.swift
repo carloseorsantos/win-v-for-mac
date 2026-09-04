@@ -25,7 +25,7 @@ public struct SettingsView: View {
                     Label("Sobre", systemImage: "info.circle")
                 }
         }
-        .frame(width: 480, height: 340)
+        .frame(width: 500, height: 420)
         .padding()
         .onAppear {
             accessibilityGranted = PasteService.isAccessibilityGranted

@@ -34,8 +34,7 @@ public struct MenuBarView: View {
             Divider()
 
             Button("Preferências...") {
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-                NSApp.activate(ignoringOtherApps: true)
+                SettingsWindowController.shared.show()
             }
             .keyboardShortcut(",", modifiers: [.command])
 

@@ -2,6 +2,7 @@ import Foundation
 import AppKit
 import SwiftUI
 
+@MainActor
 public final class AppDelegate: NSObject, NSApplicationDelegate {
     public func applicationDidFinishLaunching(_ notification: Notification) {
         // Run as background accessory app (no Dock icon, status bar only)
@@ -32,5 +33,13 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         if AppSettings.shared.clearOnQuit {
             StorageManager.shared.clearHistory(preservePinned: false)
         }
+    }
+
+    @objc public func showSettingsWindow(_ sender: Any?) {
+        SettingsWindowController.shared.show()
+    }
+
+    @objc public func showPreferencesWindow(_ sender: Any?) {
+        SettingsWindowController.shared.show()
     }
 }
