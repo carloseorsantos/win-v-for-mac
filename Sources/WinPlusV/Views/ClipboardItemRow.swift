@@ -30,7 +30,7 @@ public struct ClipboardItemRow: View {
                             .background(Color.primary.opacity(0.06))
                             .clipShape(RoundedRectangle(cornerRadius: 5))
                     } else {
-                        Image(systemName: item.type.systemImage)
+                        Image(systemName: item.isScreenshot ? "camera.viewfinder" : item.type.systemImage)
                             .font(.system(size: 12, weight: .semibold))
                             .foregroundColor(iconColor)
                             .frame(width: 22, height: 22)
@@ -41,9 +41,21 @@ public struct ClipboardItemRow: View {
                 contentView
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                // Actions: Timestamp & Pin / Delete
+                // Actions: Timestamp & Pin / Delete / Finder
                 HStack(spacing: 6) {
                     if isHovered || isSelected {
+                        if let filePath = item.filePath, FileManager.default.fileExists(atPath: filePath) {
+                            Button(action: {
+                                NSWorkspace.shared.selectFile(filePath, inFileViewerRootedAtPath: "")
+                            }) {
+                                Image(systemName: "folder")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.secondary)
+                            }
+                            .buttonStyle(.plain)
+                            .help("Mostrar no Finder")
+                        }
+
                         Button(action: onTogglePin) {
                             Image(systemName: item.isPinned ? "pin.fill" : "pin")
                                 .font(.system(size: 11))
@@ -159,7 +171,7 @@ public struct ClipboardItemRow: View {
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.primary)
 
-                    Text("Imagem da área de transferência")
+                    Text(item.isScreenshot ? "Captura de tela salva" : "Imagem da área de transferência")
                         .font(.system(size: 9))
                         .foregroundColor(.secondary)
                 }
@@ -178,6 +190,9 @@ public struct ClipboardItemRow: View {
     }
 
     private var iconColor: Color {
+        if item.isScreenshot {
+            return .teal
+        }
         switch item.type {
         case .text: return .secondary
         case .image: return .purple

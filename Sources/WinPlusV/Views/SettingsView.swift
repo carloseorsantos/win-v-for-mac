@@ -41,6 +41,39 @@ public struct SettingsView: View {
                 Toggle("Reproduzir som ao colar", isOn: $settings.playSoundOnPaste)
             }
 
+            Section("Capturas de Tela") {
+                Toggle("Salvar screenshots automaticamente no histórico", isOn: $settings.monitorScreenshots)
+                    .help("Salva capturas de tela tiradas no Mac automaticamente na aba Capturas e no histórico geral.")
+
+                if settings.monitorScreenshots {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("Pasta monitorada:")
+                            Spacer()
+                            Text(folderDisplayName)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                        }
+
+                        HStack(spacing: 8) {
+                            Button("Alterar Pasta...") {
+                                selectCustomScreenshotFolder()
+                            }
+                            .buttonStyle(.bordered)
+
+                            if settings.customScreenshotsPath != nil {
+                                Button("Restaurar Padrão do macOS") {
+                                    settings.customScreenshotsPath = nil
+                                }
+                                .buttonStyle(.borderless)
+                                .foregroundColor(.accentColor)
+                            }
+                        }
+                    }
+                }
+            }
+
             Section("Armazenamento") {
                 Picker("Limite máximo de itens no histórico:", selection: $settings.maxHistoryItems) {
                     Text("50 itens").tag(50)
@@ -160,5 +193,28 @@ public struct SettingsView: View {
             .padding(.horizontal)
         }
         .padding()
+    }
+
+    private var folderDisplayName: String {
+        let path = settings.effectiveScreenshotsURL.path
+        let desktopPath = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first?.path ?? ""
+        if path == desktopPath {
+            return "Mesa (Padrão do macOS)"
+        }
+        return path
+    }
+
+    private func selectCustomScreenshotFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.prompt = "Selecionar"
+        panel.message = "Escolha a pasta onde suas capturas de tela são salvas"
+        panel.directoryURL = settings.effectiveScreenshotsURL
+
+        if panel.runModal() == .OK, let selectedURL = panel.url {
+            settings.customScreenshotsPath = selectedURL.path
+        }
     }
 }

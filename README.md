@@ -42,8 +42,9 @@
   - **Images:** High-res thumbnail previews for copied screenshots and images.
   - **Hex Color Codes (`#HEX`):** Automatic detection with real-time color swatch preview.
   - **Links & URLs:** Smart URL parsing with domain badges.
+- **Automatic Screenshot Ingestion:** Automatically monitors macOS screen captures (saved files via Cmd+Shift+3/4 or copied via Cmd+Ctrl+Shift+4) and adds them directly to your history, with quick "Show in Finder" and 1-click paste.
 - **Pin Items (Favorites 📌):** Pin frequently used snippets so they are never deleted from history.
-- **Instant Search:** Real-time search with category tabs (*All, Pinned, Text, Images, Links, Colors*).
+- **Instant Search:** Real-time search with category tabs (*All, Pinned, Screenshots, Text, Images, Links, Colors*).
 - **Non-Activating HUD Design:** Uses native macOS vibrancy / blur and doesn't steal window key focus.
 - **Menu Bar Companion (`MenuBarExtra`):** Lives in the menu bar with zero Dock clutter (`LSUIElement`).
 - **Local Persistence & Privacy:** Stored safely on-device in `~/Library/Application Support/WinPlusV/` with configurable history limits.

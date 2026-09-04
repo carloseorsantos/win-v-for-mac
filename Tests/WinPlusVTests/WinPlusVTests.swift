@@ -54,4 +54,66 @@ final class WinPlusVTests: XCTestCase {
         XCTAssertEqual(storage.items.count, 1)
         XCTAssertEqual(storage.items[0].textValue, "Primeiro texto")
     }
+
+    func testScreenshotItemCodableBackwardCompatibility() throws {
+        // JSON from prior app version without isScreenshot or filePath
+        let legacyJSON = """
+        {
+            "id": "12345678-1234-1234-1234-123456789abc",
+            "type": "image",
+            "createdAt": "2026-09-01T12:00:00Z",
+            "isPinned": false
+        }
+        """.data(using: .utf8)!
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let item = try decoder.decode(ClipboardItem.self, from: legacyJSON)
+
+        XCTAssertFalse(item.isScreenshot)
+        XCTAssertNil(item.filePath)
+        XCTAssertEqual(item.type, .image)
+    }
+
+    func testScreenshotItemEncodingAndDecoding() throws {
+        let originalItem = ClipboardItem(
+            type: .image,
+            imageData: Data([0x01, 0x02, 0x03]),
+            isScreenshot: true,
+            filePath: "/Users/test/Desktop/Captura de Tela 2026-09-03 às 10.00.00.png"
+        )
+
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let encoded = try encoder.encode(originalItem)
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode(ClipboardItem.self, from: encoded)
+
+        XCTAssertTrue(decoded.isScreenshot)
+        XCTAssertEqual(decoded.filePath, "/Users/test/Desktop/Captura de Tela 2026-09-03 às 10.00.00.png")
+        XCTAssertEqual(decoded.type, .image)
+        XCTAssertEqual(decoded.imageData, Data([0x01, 0x02, 0x03]))
+    }
+
+    func testScreenshotSearchMatching() {
+        let screenshotItem = ClipboardItem(
+            type: .image,
+            isScreenshot: true,
+            filePath: "/Users/test/Desktop/Captura de Tela 2026-09-03.png"
+        )
+
+        XCTAssertTrue(screenshotItem.matches(query: "captura"))
+        XCTAssertTrue(screenshotItem.matches(query: "screenshot"))
+        XCTAssertTrue(screenshotItem.matches(query: "2026-09-03"))
+        XCTAssertFalse(screenshotItem.matches(query: "planilha"))
+    }
+
+    func testFilterTabsIncludeCapturas() {
+        let tabs = FilterTab.allCases
+        XCTAssertTrue(tabs.contains(.screenshots))
+        XCTAssertEqual(FilterTab.screenshots.rawValue, "Capturas")
+        XCTAssertEqual(FilterTab.screenshots.icon, "camera")
+    }
 }

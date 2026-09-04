@@ -50,7 +50,35 @@ public final class ClipboardMonitor: ObservableObject {
                 if let image = NSImage(data: imgData), let tiff = image.tiffRepresentation,
                    let bitmap = NSBitmapImageRep(data: tiff),
                    let pngData = bitmap.representation(using: .png, properties: [:]) {
-                    let item = ClipboardItem(type: .image, imageData: pngData)
+                    var isScreenshot = false
+                    var filePath: String? = nil
+
+                    // Check if pasteboard has a file URL to a screenshot
+                    if let fileURLs = pasteboard.readObjects(forClasses: [NSURL.self], options: nil) as? [URL],
+                       let firstURL = fileURLs.first {
+                        filePath = firstURL.path
+                        if ScreenshotMonitor.shared.isScreenshotFile(fileURL: firstURL) {
+                            isScreenshot = true
+                        }
+                    }
+
+                    // Direct screenshot to clipboard (Cmd+Ctrl+Shift+3/4)
+                    // Screencapture utility places pure image data without web markup or text
+                    if !isScreenshot {
+                        let types = pasteboard.types ?? []
+                        let hasWebMarkup = types.contains { $0.rawValue.contains("html") || $0.rawValue.contains("webarchive") }
+                        let hasString = pasteboard.string(forType: .string) != nil
+                        if !hasWebMarkup && !hasString {
+                            isScreenshot = true
+                        }
+                    }
+
+                    let item = ClipboardItem(
+                        type: .image,
+                        imageData: pngData,
+                        isScreenshot: isScreenshot,
+                        filePath: filePath
+                    )
                     StorageManager.shared.addItem(item)
                     return
                 }

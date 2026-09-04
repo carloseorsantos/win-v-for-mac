@@ -13,6 +13,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         // Start Clipboard Monitor
         ClipboardMonitor.shared.startMonitoring()
 
+        // Start Screenshot Monitor
+        ScreenshotMonitor.shared.startMonitoring()
+
         // Register Global Shortcut (Option + V)
         HotKeyManager.shared.registerDefaultHotKey {
             FloatingPanelController.shared.toggleNearCursor()
@@ -23,6 +26,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     public func applicationWillTerminate(_ notification: Notification) {
         ClipboardMonitor.shared.stopMonitoring()
+        ScreenshotMonitor.shared.stopMonitoring()
         HotKeyManager.shared.unregisterHotKey()
 
         if AppSettings.shared.clearOnQuit {

@@ -38,7 +38,14 @@ public final class PasteService {
             }
 
         case .image:
-            if let data = item.imageData {
+            if let filePath = item.filePath, FileManager.default.fileExists(atPath: filePath) {
+                let fileURL = URL(fileURLWithPath: filePath)
+                if let data = item.imageData, let image = NSImage(data: data) {
+                    pasteboard.writeObjects([image, fileURL as NSURL])
+                } else {
+                    pasteboard.writeObjects([fileURL as NSURL])
+                }
+            } else if let data = item.imageData {
                 if let image = NSImage(data: data) {
                     pasteboard.writeObjects([image])
                 } else {

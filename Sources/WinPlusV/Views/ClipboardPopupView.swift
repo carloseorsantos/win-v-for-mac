@@ -30,6 +30,7 @@ public struct VisualEffectView: NSViewRepresentable {
 public enum FilterTab: String, CaseIterable, Identifiable {
     case all = "Todos"
     case pinned = "Fixados"
+    case screenshots = "Capturas"
     case text = "Textos"
     case images = "Imagens"
     case urls = "Links"
@@ -41,6 +42,7 @@ public enum FilterTab: String, CaseIterable, Identifiable {
         switch self {
         case .all: return "square.grid.2x2"
         case .pinned: return "pin.fill"
+        case .screenshots: return "camera"
         case .text: return "doc.text"
         case .images: return "photo"
         case .urls: return "link"
@@ -67,6 +69,8 @@ public struct ClipboardPopupView: View {
             break
         case .pinned:
             list = list.filter(\.isPinned)
+        case .screenshots:
+            list = list.filter(\.isScreenshot)
         case .text:
             list = list.filter { $0.type == .text }
         case .images:

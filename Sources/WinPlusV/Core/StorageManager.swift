@@ -66,7 +66,7 @@ public final class StorageManager: ObservableObject {
             }
         }) {
             let existing = items.remove(at: existingIndex)
-            // Preserve pin status if it was pinned, but update timestamp
+            // Preserve pin status if it was pinned, but update timestamp and metadata
             let updated = ClipboardItem(
                 id: existing.id,
                 type: existing.type,
@@ -75,7 +75,9 @@ public final class StorageManager: ObservableObject {
                 htmlValue: existing.htmlValue,
                 rtfData: existing.rtfData,
                 createdAt: Date(),
-                isPinned: existing.isPinned
+                isPinned: existing.isPinned,
+                isScreenshot: newItem.isScreenshot || existing.isScreenshot,
+                filePath: newItem.filePath ?? existing.filePath
             )
             items.insert(updated, at: 0)
         } else {

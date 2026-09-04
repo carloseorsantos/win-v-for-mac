@@ -42,8 +42,9 @@
   - **Imagens:** Miniaturas visuais para capturas de tela e imagens copiadas.
   - **Cores Hexadecimais (`#HEX`):** Reconhece códigos hexadecimais e exibe uma amostra visual da cor.
   - **Links e URLs:** Detecção de links web com ícone e domínio.
+- **Captura Automática de Screenshots:** Detecta capturas de tela do macOS (Cmd+Shift+3/4 salvas em arquivo ou Cmd+Ctrl+Shift+4 copiadas direto) e inclui instantaneamente no histórico, com botão rápido para abrir no Finder e colar com 1 clique.
 - **Fixação de Itens (Pin 📌):** Fixe seus textos e snippets favoritos no topo para nunca serem excluídos.
-- **Busca em Tempo Real:** Filtragem instantânea por texto ou por abas (*Todos, Fixados, Textos, Imagens, Links, Cores*).
+- **Busca em Tempo Real:** Filtragem instantânea por texto ou por abas (*Todos, Fixados, Capturas, Textos, Imagens, Links, Cores*).
 - **Interface Nativa macOS:** Blur/vibrancy translúcido e janela não-ativante que não rouba o foco do cursor.
 - **Barra de Menus Discreta:** Roda em segundo plano na barra de status superior, sem ocupar espaço no Dock (`LSUIElement`).
 - **Armazenamento Seguro Local:** Persistência no seu Mac em `~/Library/Application Support/WinPlusV/` com limite de itens personalizável.

@@ -35,6 +35,12 @@ public struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
     public let rtfData: Data?
     public let createdAt: Date
     public var isPinned: Bool
+    public var isScreenshot: Bool
+    public var filePath: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, type, textValue, imageData, htmlValue, rtfData, createdAt, isPinned, isScreenshot, filePath
+    }
 
     public init(
         id: UUID = UUID(),
@@ -44,7 +50,9 @@ public struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
         htmlValue: String? = nil,
         rtfData: Data? = nil,
         createdAt: Date = Date(),
-        isPinned: Bool = false
+        isPinned: Bool = false,
+        isScreenshot: Bool = false,
+        filePath: String? = nil
     ) {
         self.id = id
         self.type = type
@@ -54,6 +62,36 @@ public struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
         self.rtfData = rtfData
         self.createdAt = createdAt
         self.isPinned = isPinned
+        self.isScreenshot = isScreenshot
+        self.filePath = filePath
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.type = try container.decode(ClipboardItemType.self, forKey: .type)
+        self.textValue = try container.decodeIfPresent(String.self, forKey: .textValue)
+        self.imageData = try container.decodeIfPresent(Data.self, forKey: .imageData)
+        self.htmlValue = try container.decodeIfPresent(String.self, forKey: .htmlValue)
+        self.rtfData = try container.decodeIfPresent(Data.self, forKey: .rtfData)
+        self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+        self.isPinned = try container.decodeIfPresent(Bool.self, forKey: .isPinned) ?? false
+        self.isScreenshot = try container.decodeIfPresent(Bool.self, forKey: .isScreenshot) ?? false
+        self.filePath = try container.decodeIfPresent(String.self, forKey: .filePath)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(type, forKey: .type)
+        try container.encodeIfPresent(textValue, forKey: .textValue)
+        try container.encodeIfPresent(imageData, forKey: .imageData)
+        try container.encodeIfPresent(htmlValue, forKey: .htmlValue)
+        try container.encodeIfPresent(rtfData, forKey: .rtfData)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(isPinned, forKey: .isPinned)
+        try container.encode(isScreenshot, forKey: .isScreenshot)
+        try container.encodeIfPresent(filePath, forKey: .filePath)
     }
 
     public var previewTitle: String {
@@ -65,10 +103,11 @@ public struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
         case .colorHex:
             return (textValue ?? "").uppercased()
         case .image:
+            let prefix = isScreenshot ? "Captura de Tela" : "Imagem"
             if let data = imageData, let image = NSImage(data: data) {
-                return "Imagem (\(Int(image.size.width)) × \(Int(image.size.height)))"
+                return "\(prefix) (\(Int(image.size.width)) × \(Int(image.size.height)))"
             }
-            return "Imagem"
+            return prefix
         }
     }
 
@@ -84,6 +123,14 @@ public struct ClipboardItem: Identifiable, Codable, Equatable, Sendable {
     public func matches(query: String) -> Bool {
         guard !query.isEmpty else { return true }
         let cleanQuery = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+
+        if isScreenshot && ("captura".localizedCaseInsensitiveContains(cleanQuery) || "screenshot".localizedCaseInsensitiveContains(cleanQuery)) {
+            return true
+        }
+
+        if let filePath = filePath, (filePath as NSString).lastPathComponent.localizedCaseInsensitiveContains(cleanQuery) {
+            return true
+        }
 
         if let text = textValue, text.localizedCaseInsensitiveContains(cleanQuery) {
             return true
