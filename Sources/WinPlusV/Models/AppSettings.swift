@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import ServiceManagement
 
 @MainActor
 public final class AppSettings: ObservableObject {
@@ -33,7 +34,28 @@ public final class AppSettings: ObservableObject {
     }
 
     @Published public var launchAtLogin: Bool {
-        didSet { UserDefaults.standard.set(launchAtLogin, forKey: Keys.launchAtLogin) }
+        didSet {
+            UserDefaults.standard.set(launchAtLogin, forKey: Keys.launchAtLogin)
+            updateLaunchAtLoginService(enabled: launchAtLogin)
+        }
+    }
+
+    private func updateLaunchAtLoginService(enabled: Bool) {
+        // Only attempt system service registration if running inside a macOS .app bundle
+        guard Bundle.main.bundleURL.pathExtension == "app" else { return }
+        do {
+            if enabled {
+                if SMAppService.mainApp.status != .enabled {
+                    try SMAppService.mainApp.register()
+                }
+            } else {
+                if SMAppService.mainApp.status == .enabled {
+                    try SMAppService.mainApp.unregister()
+                }
+            }
+        } catch {
+            print("[WinPlusV AppSettings] Erro ao alterar inicialização com o sistema: \(error)")
+        }
     }
 
     @Published public var monitorScreenshots: Bool {
@@ -84,7 +106,11 @@ public final class AppSettings: ObservableObject {
         self.maxHistoryItems = defaults.integer(forKey: Keys.maxHistoryItems)
         self.playSoundOnPaste = defaults.bool(forKey: Keys.playSoundOnPaste)
         self.clearOnQuit = defaults.bool(forKey: Keys.clearOnQuit)
-        self.launchAtLogin = defaults.bool(forKey: Keys.launchAtLogin)
+        if Bundle.main.bundleURL.pathExtension == "app" && SMAppService.mainApp.status == .enabled {
+            self.launchAtLogin = true
+        } else {
+            self.launchAtLogin = defaults.bool(forKey: Keys.launchAtLogin)
+        }
         self.monitorScreenshots = defaults.bool(forKey: Keys.monitorScreenshots)
         self.customScreenshotsPath = defaults.string(forKey: Keys.customScreenshotsPath)
     }

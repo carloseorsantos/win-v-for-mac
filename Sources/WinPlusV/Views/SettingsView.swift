@@ -35,6 +35,9 @@ public struct SettingsView: View {
     private var generalTab: some View {
         Form {
             Section("Comportamento") {
+                Toggle("Iniciar junto com o Mac", isOn: $settings.launchAtLogin)
+                    .help("Inicia o Win+V automaticamente em segundo plano ao ligar ou fazer login no macOS.")
+
                 Toggle("Colar automaticamente ao selecionar item", isOn: $settings.autoPasteOnSelect)
                     .help("Ao clicar ou pressionar Enter em um item, o app fecha e cola automaticamente no seu aplicativo atual.")
 

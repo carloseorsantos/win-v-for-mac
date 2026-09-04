@@ -47,6 +47,7 @@
 - **Busca em Tempo Real:** Filtragem instantânea por texto ou por abas (*Todos, Fixados, Capturas, Textos, Imagens, Links, Cores*).
 - **Interface Nativa macOS:** Blur/vibrancy translúcido e janela não-ativante que não rouba o foco do cursor.
 - **Barra de Menus Discreta:** Roda em segundo plano na barra de status superior, sem ocupar espaço no Dock (`LSUIElement`).
+- **Iniciar com o Mac:** Opção nativa nas Preferências para abrir o Win+V automaticamente ao ligar o macOS (`SMAppService`).
 - **Armazenamento Seguro Local:** Persistência no seu Mac em `~/Library/Application Support/WinPlusV/` com limite de itens personalizável.
 
 ---

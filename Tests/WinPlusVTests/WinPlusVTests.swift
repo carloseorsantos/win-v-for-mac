@@ -116,4 +116,19 @@ final class WinPlusVTests: XCTestCase {
         XCTAssertEqual(FilterTab.screenshots.rawValue, "Capturas")
         XCTAssertEqual(FilterTab.screenshots.icon, "camera")
     }
+
+    @MainActor
+    func testLaunchAtLoginSetting() {
+        let settings = AppSettings.shared
+        let original = settings.launchAtLogin
+
+        settings.launchAtLogin = true
+        XCTAssertTrue(settings.launchAtLogin)
+
+        settings.launchAtLogin = false
+        XCTAssertFalse(settings.launchAtLogin)
+
+        // Restore original value
+        settings.launchAtLogin = original
+    }
 }

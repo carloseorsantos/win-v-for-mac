@@ -47,6 +47,7 @@
 - **Instant Search:** Real-time search with category tabs (*All, Pinned, Screenshots, Text, Images, Links, Colors*).
 - **Non-Activating HUD Design:** Uses native macOS vibrancy / blur and doesn't steal window key focus.
 - **Menu Bar Companion (`MenuBarExtra`):** Lives in the menu bar with zero Dock clutter (`LSUIElement`).
+- **Launch at Login:** Native option in Preferences to start Win+V in the background on system startup (`SMAppService`).
 - **Local Persistence & Privacy:** Stored safely on-device in `~/Library/Application Support/WinPlusV/` with configurable history limits.
 
 ---
